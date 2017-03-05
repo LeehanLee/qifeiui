@@ -1,0 +1,20 @@
+@import "../../../variables.less";
+
+.primary-item-widget(){
+    .item{
+        color: #fff;
+        line-height: @primary-navigation-height;
+        display: block;    
+        padding: 0 15px;
+        text-decoration: none;
+        &:hover{
+            background: #ff3300;
+            color: #fff;
+            transition: background .3s;-moz-transition: background .3s;-webkit-transition: background .3s;-o-transition: background .3s;
+        }
+        &.active{
+            background: #fff;
+            color: #852b99;
+        }
+    }
+}
