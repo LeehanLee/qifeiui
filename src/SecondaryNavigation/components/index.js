@@ -1,43 +1,40 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import _ from "lodash";
-import {secondaryMenuInitAction } from "../actions/index.js";
+import {bindActionCreators} from "redux";
+import {connect} from "react-redux";
+import css from "./index.less";
 
-class SecondaryNavigation extends Component {
+const items = [
+    {name: "account", url: "/account"},
+    {name: "department", url: "/department"},
+];
+
+class SecondaryNavigation extends Component{
+    constructor(props) {
+        super(props);
+    }
+
+    getItemLink(item, path) {
+        const classname = path === item.url ? "item current" : "item";
+        return (<a key={item.name} className={classname} href={`/#${item.url}`}>{item.name}</a>);
+    }
     render(){
-        const { secondaryMenuList, currentPrimaryPath, currentSecondaryPath } = this.props;
-        if (secondaryMenuList) {
-            return (
-                <div className="secondary-menu-container">
-                    {
-                        secondaryMenuList.map((l, index) => {
-                            const className = !_.isEmpty(currentSecondaryPath) && l.href == currentSecondaryPath ? "item active" : "item";
-                            if (l.href) {
-                                return (<a className={className} key={index} href={`#/${currentPrimaryPath}/${l.href}`}>{l.text}</a>);
-                            } else {
-                                return (<a className={className} key={index}>{l.text}</a>);
-                            }
-                        })
-                    }
-                </div>
-            );
-        } else {
-            return null;
-        }
+        const path = this.props.routing.locationBeforeTransitions.pathname;
+        return (<div className="secondary-navigation-widget">
+            {
+                items.map((item) => {
+                    return this.getItemLink(item, path);
+                })
+            }
+        </div>);
     }
 }
-
-const mapStatetoProps = (state) => {
-    let currentPrimaryPath = state.routeState.routes.length > 0 ? state.routeState.routes[0].path : "";
-    currentPrimaryPath = _.trim(currentPrimaryPath, '/');
-    let currentSecondaryPath = state.routeState.routes.length > 1 ? state.routeState.routes[1].path : "";
-    currentSecondaryPath = _.trim(currentSecondaryPath, '/');
-    const activePrimaryMenu = _.find(state.primaryMenuList, p => p.href == currentPrimaryPath);
+const mapStatesToProps = (state) => {
     return {
-        secondaryMenuList: state.secondaryMenuList,
-        currentPrimaryPath,
-        currentSecondaryPath
+        routing: state.routing
     };
 };
+// const mapDispatchToProps = (dispatch, getState) => {
+//     return bindActionCreators(Actions, dispatch);
+// };
 
-export default connect(mapStatetoProps)(SecondaryNavigation);
+export default connect(mapStatesToProps)(SecondaryNavigation);

@@ -1,0 +1,21 @@
+.button {
+    margin: 0 10px;
+    width: 80px;
+    height: 32px;
+    border: none;
+    color: #fff;
+    // background: #0087CC;
+    background-image: -moz-linear-gradient(top,#0087CC,#04c);
+    background-image: -webkit-gradient(linear,0 0,0 100%,from(#08c),to(#04c));
+    background-image: -webkit-linear-gradient(top,#08c,#04c);
+    background-image: -o-linear-gradient(top,#08c,#04c);
+    background-image: linear-gradient(to bottom,#08c,#04c);
+    cursor: pointer;
+
+    &:hover {
+        background-image: linear-gradient(to bottom,#04c,#04c);
+        box-shadow: 0 0 8px #0087CC;
+        transition: all 0.2s ease-in;
+    }
+
+}

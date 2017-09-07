@@ -1,0 +1,48 @@
+.table-container {
+    box-shadow: 0px 0px 5px #888;
+    border: 1px solid #852b99;
+
+    .content-table {
+        width: 100%;
+        background-color: transparent;
+        border-collapse: collapse;
+        border-spacing: 0;
+        border: 1px solid #852b99;
+    
+        tr {
+            height: 40px;
+        }
+    
+        thead {
+            tr {
+                background: #852b99;
+                color: white;
+            }
+        }
+    
+        tbody {
+            tr {
+                background: #fff;
+                color: #191919;
+    
+                &:hover {
+                    transition: all 0.2s;
+                    background: #e7f4f9;
+                    color: #292929;
+                }
+    
+                .select-checkbox{
+                    text-align: center;
+                }
+    
+                td {
+                    border: 1px solid #eee;
+    
+                    &:not(.select-checkbox) {
+                        padding-left: 10px;
+                    }
+                }
+            }
+        }
+    }
+}

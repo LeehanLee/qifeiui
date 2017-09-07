@@ -1,0 +1,19 @@
+@import "./FormInputItem.less";
+@import "./FormTreeItem.less";
+
+.form-item-widget() {
+    .form-item {
+        position: relative; //若没有这个属性，error msg就无法出现在正确的位置
+        margin-bottom: 28px;
+
+        .form-item-title {
+            width: 20%;
+            display: inline-block;
+            text-align: right;
+            line-height: 32px;
+        }
+
+        .form-input-item-widget();
+        .form-tree-item-widget();
+    }
+}

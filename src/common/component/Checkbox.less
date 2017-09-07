@@ -1,0 +1,33 @@
+.checkbox-widget() {
+    input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+        vertical-align: middle;
+        display: none;
+    }
+
+    .checkbox-icon {
+        width: 16px;
+        vertical-align: sub;
+        height: 16px;
+        line-height: 16px;
+        display: inline-block;
+        background-image: url(../../../images/32px.png);
+
+        &.checked {
+            background-position: -232px -8px;
+
+            &:hover {
+                background-position: -232px -40px;
+            }
+        }
+
+        &.unchecked {
+            background-position: -168px -8px;
+
+            &:hover {
+                background-position: -168px -40px;
+            }
+        }
+    }
+}

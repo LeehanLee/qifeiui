@@ -1,0 +1,55 @@
+.layout-widget() {
+    .layout {
+        margin: 0;
+        padding: 0;
+        background: #edeff0;
+
+        .top {
+            height: 38px;
+            width: 100%;
+        }
+
+        .logo {
+            height: 60px;
+            width: 100%;
+        }
+
+        .main {
+            min-height: 300px;
+            width: 100%;
+            display: flex;
+
+            .left {
+                width: 20%; 
+            }
+            
+            .right {
+                width: 80%;
+                transition: width .2s ease;
+
+                &.short {
+                    width: 44%;
+                }
+            }
+        }
+
+        .fixed-right {
+            overflow: auto;
+            position: fixed;
+            width: 35%;
+            height: 97%;
+            top: 0px;
+            right: 0px;
+            background: #fff;
+            box-shadow: 0 0 5px 0;
+            margin: 1%;
+            transition: opacity .3s ease, transform .3s ease, -webkit-transform .3s ease;
+
+            &.hide-fixed-right {
+                opacity: 0;
+                transform: scale(0);
+                -webkit-transform: scale(0);
+            }
+        }
+    }
+};

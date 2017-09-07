@@ -1,7 +1,13 @@
-@import "./PrimaryNavigation/index.less";
-@import "./SecondaryNavigation/components/index.less";
-@import "./Logo/index.less";
-@import "./Areas/Account/components/index.less";
+@import "./common/component/Form.less";
+@import "./common/component/FormItem.less";
+@import "./common/component/Layout.less";
+@import "./common/component/MessageBar.less";
+@import "./common/component/Pager.less";
+@import "./common/component/Tree.less";
+@import "./triangle.less";
+@import "./scrollbar.less";
+@import "./common/component/Modal.less";
+@import "./common/component/Checkbox.less";
 
 *{
     margin: 0;padding: 0;
@@ -22,7 +28,58 @@
 .fr{
     float: right;
 }
-.primary-navigation-widget();
-.secondary-navigation-widget();
-.logo-container-widget();
-.account-widget();
+.close-btn {
+    position: absolute;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    overflow: hidden;
+    top: 13px;
+    right: 13px;
+    cursor: pointer;
+    height: 20px;
+
+    &::before,
+    &::after {
+        border-radius: 5px;
+        height: 2px;
+        margin-top: -4px;
+        content: '';
+        position: absolute;
+        width: 100%;
+        top: 50%;
+        left: 0;
+        margin-top: -1px;
+        background: #9fadc7;
+    }
+
+    &::before {
+        -webkit-transform: rotate(45deg);
+        -moz-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+        -o-transform: rotate(45deg);
+        transform: rotate(45deg);
+    }
+
+    &::after {
+        -webkit-transform: rotate(-45deg);
+        -moz-transform: rotate(-45deg);
+        -ms-transform: rotate(-45deg);
+        -o-transform: rotate(-45deg);
+        transform: rotate(-45deg);
+    }
+
+    &:hover::before,
+    &:hover::after {
+        background: #555;
+    }
+}
+.form-widget();
+.form-item-widget();
+.layout-widget();
+.message-bar-container();
+.pager-container();
+.tree-widget();
+.triangle();
+.modal-widget();
+.checkbox-widget();

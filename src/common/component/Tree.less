@@ -1,0 +1,45 @@
+.tree-widget() {
+    .tree {
+        .node {
+            padding-left: 20px;
+
+            .text {
+                line-height: 30px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+
+                &:hover {
+                    background: #e7f4f9;
+                }
+
+                &.selected {
+                    background: #beebff;
+                    background: -webkit-linear-gradient(top,#beebff 0,#a8e4ff 100%);
+                    background: linear-gradient(to bottom,#beebff 0,#a8e4ff 100%);
+                }
+
+                .tree-checkbox {
+                    margin: 0 8px;
+                }
+            }
+
+            &.show {
+                visibility: visible;
+                opacity: 1;
+                
+                .text {
+                    height: 30px
+                }
+            }
+
+            &.hide {
+                visibility: hidden;
+                opacity: 0;
+
+                .text {
+                    height: 0
+                }
+            }
+        }
+    }
+}
