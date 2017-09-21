@@ -3,7 +3,7 @@ import FormItem from "./FormItem";
 import Tree from "./Tree";
 import Modal from "./Modal";
 
-class FormTreeItem extends FormItem{
+class FormTreeItem extends FormItem {
     constructor(props) {
         super(props);
         this.toggleModalTree = this.toggleModalTree.bind(this);
@@ -12,25 +12,38 @@ class FormTreeItem extends FormItem{
         this.renderCurrentSelectedText = this.renderCurrentSelectedText.bind(this);
         this.handleResetClick = this.handleResetClick.bind(this);
         this.handleResetAndOpenModalTree = this.handleResetAndOpenModalTree.bind(this);
+        this.setSelectedIdsAndTexts = this.setSelectedIdsAndTexts.bind(this);
 
         this.state = {
-            currentSelectedText: null,
-            showTree: false
+            showTree: false,
+            selectedIds: [],
+            selectedTexts: []
         }
+
+        this.child = {};
     }
 
     renderModelTree() {
-        const body = <Tree ref="tree" show={this.state.showTree}/>;
-        return (<Modal onYesClick={this.handleYesClicked} onNoClick={this.handleNoClicked} ref="modalTree" title="请选择" body={body}/>);
+        if (this.state.showTree) {
+            const body = <Tree url={this.props.url} selectedIds={this.props.selectedIds} onNodeClick={this.setSelectedIdsAndTexts} selectMode={this.props.selectMode} />;
+            return (<Modal onYesClick={this.handleYesClicked} onNoClick={this.handleNoClicked} title="请选择" body={body}/>);
+        }
+        return null;
+    }
+
+    setSelectedIdsAndTexts(node, selectedIds, selectedTexts) {
+        this.setState({
+            selectedIds,
+            selectedTexts
+        });
     }
 
     toggleModalTree() {
-        this.refs.modalTree.toggleModal();
         this.setState({showTree: !this.state.showTree});
     }
 
     renderTriggerText() {
-        return this.state.currentSelectedText ? "重新选择" : "请选择";
+        return this.props.selectedTexts ? "重新选择" : "请选择";
     }
 
     handleYesClicked(e) {
@@ -38,16 +51,12 @@ class FormTreeItem extends FormItem{
         e.preventDefault();
         this.toggleModalTree();
 
-        const currentSelectedText = this.refs.tree.state.selectedNodes.map((snode) => {
-            return snode.text;
-        }).join(",");
-        this.setState({currentSelectedText});
-        
         if (this.props.onChange) {
-            const currentSelectedId = this.refs.tree.state.selectedNodes.map((snode) => {
-                return snode.id;
-            }).join(",");
-            this.props.onChange(currentSelectedId);
+            const currentSelected = {
+                value: this.state.selectedIds.join(","),
+                text: this.state.selectedTexts.join(",")
+            };
+            this.props.onChange(currentSelected);
         }
     }
 
@@ -58,21 +67,10 @@ class FormTreeItem extends FormItem{
     }
 
     handleResetClick() {
-        const newTreeData = _.cloneDeep(this.refs.tree.state.treeData);
-        this.refs.tree.state.selectedNodes.forEach((snode) => {
-            const node = _.get(newTreeData, snode.path);
-            node.selected = false;
-            _.set(newTreeData, snode.path, node);
-        });
         
-        this.refs.tree.setState({
-            treeData: newTreeData,
-            selectedNodes: []
-        });
-        this.setState({currentSelectedText: null});
 
         if (this.props.onChange) {
-            this.props.onChange("");
+            this.props.onChange({});
         }
     }
 
@@ -81,24 +79,24 @@ class FormTreeItem extends FormItem{
         this.toggleModalTree();
 
         if (this.props.onChange) {
-            this.props.onChange("");
+            this.props.onChange({});
         }
     }
 
     renderCurrentSelectedText() {
-        if (_.isEmpty(this.state.currentSelectedText)) {
+        if (_.isEmpty(this.props.selectedTexts)) {
             return null;
         }
-        return (<div className="current-selected-text">{this.state.currentSelectedText}</div>);
+        return (<div className="current-selected-text">{this.props.selectedTexts}</div>);
     }
 
     renderResetBtn() {
-        if (_.isEmpty(this.state.currentSelectedText)) {
+        if (_.isEmpty(this.props.selectedTexts)) {
             return null;
         }
         const result = [];
         result.push(<span key="reset" onClick={this.handleResetClick} className="form-tree-reset">清空</span>);
-        result.push(<span key="resettrigger" onClick={this.handleResetAndOpenModalTree} className="form-tree-reset">清空并重新选择</span>);
+        // result.push(<span key="resettrigger" onClick={this.handleResetAndOpenModalTree} className="form-tree-reset">清空并重新选择</span>);
         return result;
     }
 
@@ -114,6 +112,8 @@ class FormTreeItem extends FormItem{
 
 FormTreeItem.propTypes = {
     title: React.PropTypes.string,
+    selectedIds: React.PropTypes.string,
+    selectedTexts: React.PropTypes.string,
     onChange: React.PropTypes.func
 };
 

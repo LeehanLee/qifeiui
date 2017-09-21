@@ -5,29 +5,15 @@ import Button from "./Button";
 class Modal extends Component{
     constructor(props) {
         super(props);
-        this.toggleModal = this.toggleModal.bind(this);
-        this.handleCloseBtnClicked = this.handleCloseBtnClicked.bind(this);
         this.handleYesClicked = this.handleYesClicked.bind(this);
         this.handleNoClicked = this.handleNoClicked.bind(this);
 
-        this.state = {
-            hide: true
-        }
-    }
-
-    toggleModal() {
-        this.setState({hide: !this.state.hide});
-    }
-
-    handleCloseBtnClicked() {
-        this.setState({hide: true});
     }
 
     handleYesClicked(e) {
         e.stopPropagation();
         e.preventDefault();
 
-        this.handleCloseBtnClicked();
         if (this.props.onYesClick) {
             this.props.onYesClick(e);
         }
@@ -37,16 +23,15 @@ class Modal extends Component{
         e.stopPropagation();
         e.preventDefault();
 
-        this.handleCloseBtnClicked();
         if (this.props.onNoClick) {
             this.props.onNoClick(e);
         }
     }
     
     render(){
-        const wrapperClassname = this.state.hide ? "modal-wrapper hide" : "modal-wrapper show";
-        const maskClassname = this.state.hide ? "modal-mask hide" : "modal-mask show";
-        const widgetClassname = this.state.hide ? "modal-widget big hide" : "modal-widget big show";
+        const wrapperClassname = "modal-wrapper";
+        const maskClassname = "modal-mask";
+        const widgetClassname = "modal-widget big";
         return (<div className={wrapperClassname}>
             <div onClick={this.handleNoClicked} className={maskClassname}></div>
             <div ref="modal" className={widgetClassname}>

@@ -4,7 +4,7 @@ const path = require('path');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 const config = {
-  devtool: 'cheap-module-eval-source-map',
+  devtool: 'eval',
   //eval：es6源码->es5源码，一一对应，且页面刷新时componentDidMount方法里的断点可命中
   //cheap-eval-source-map：es6源码->es5源码，一一对应，且页面刷新时componentDidMount方法里的断点  无法  命中
   //cheap-module-eval-source-map：es6源码->es6源码，一一对应，不过页面刷新时componentDidMount方法里的断点无法命中，只是后续用户操作（鼠标点击、输入等）后的断点可命中

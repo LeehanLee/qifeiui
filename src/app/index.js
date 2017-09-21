@@ -34,10 +34,6 @@ class App extends Component{
         return (<Provider store={store}>
             <div>
                 <Router history={history}>
-                    <Route path="/">
-                        <Link to="/account">account</Link>
-                        <Link to="/department">department</Link>
-                    </Route>
                     <Route path="/account" component={AccountWidget} />
                     <Route path="/department" component={DepartmentWidget} />
                 </Router>

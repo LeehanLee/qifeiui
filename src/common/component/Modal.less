@@ -7,10 +7,6 @@
         left: 0;
         top: 0;
 
-        &.hide {
-            visibility: hidden;
-        }
-
         .modal-mask {
             z-index: 3;
             position: absolute;
@@ -20,13 +16,23 @@
             top: 0;
             background: rgba(30, 30, 30, 0.3);
             transition: all 0.2s ease;
+            animation: fade-in 0.4s ease;
 
-            &.hide {
-                opacity: 0;
+            @keyframes fade-in{
+                from {
+                    opacity: 0;
+                }
+                to {
+                    opacity: 1;
+                }
             }
-            &.show {
-                opacity: 1;
-            }
+
+            // &.hide {
+            //     opacity: 0;
+            // }
+            // &.show {
+            //     opacity: 1;
+            // }
         }
 
         .modal-widget {
@@ -41,16 +47,28 @@
             box-shadow: 0 0 5px 0;
             background: #fff;
             transition: all 0.2s ease;
+            animation: scale-in 0.2s ease;
+
+            @keyframes scale-in{
+                from {
+                    transform: scale(0);
+                    opacity: 0;
+                }
+                to {
+                    transform: scale(1);
+                    opacity: 1;
+                }
+            }
             
-            &.hide {
-                transform: scale(0);
-                opacity: 0;
-            }
+            // &.hide {
+            //     transform: scale(0);
+            //     opacity: 0;
+            // }
     
-            &.show {
-                transform: scale(1);
-                opacity: 1;
-            }
+            // &.show {
+            //     transform: scale(1);
+            //     opacity: 1;
+            // }
     
             &.small {
                 width: 320px;
