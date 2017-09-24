@@ -66,10 +66,10 @@ class DepartmentWidget extends BaseTreePage{
         this.setState({formData: response.data, formAction: "/department/edit"});
     }
 
-    setDepartmentForm(newnode) {
+    setDepartmentForm(newnode, selectedIds) {
         if (newnode.selected) {
             const params = {id: newnode.id};
-            this.setState({selectedIds: [newnode.id]});
+            this.setState({selectedIds: [...selectedIds]});
             ApiHelper.get(`/department/get`, {params}).then(this.setDepartmentFormWithRemoteData);
         } else {
             this.setState({formData: initFormData, formAction: "/department/add"});
@@ -108,7 +108,7 @@ class DepartmentWidget extends BaseTreePage{
                                                _.partial(this.child.departmentTree.initTree, "/department/tree"));
                 }
                 return button;
-            })
+            });
             this.setState({actionButtons});
         });
     }

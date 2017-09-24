@@ -1,12 +1,14 @@
 .layout-widget() {
     .layout {
+        width: 100%;
+        height: 100%;
         margin: 0;
         padding: 0;
         background: #edeff0;
 
         .top {
-            height: 38px;
-            width: 100%;
+            height: 40px;
+            line-height: 40px;
         }
 
         .logo {
@@ -15,20 +17,21 @@
         }
 
         .main {
-            min-height: 300px;
+            height: calc(~"100% - 100px");
             width: 100%;
             display: flex;
 
             .left {
-                width: 20%; 
+                width: 15%;
+                background: #1a3f6f;
             }
             
             .right {
-                width: 80%;
+                width: 85%;
                 transition: width .2s ease;
 
                 &.short {
-                    width: 44%;
+                    width: 49%;
                 }
             }
         }

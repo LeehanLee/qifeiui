@@ -47,8 +47,8 @@ class Layout extends Component{
 
     render(){
         return (<div className="layout">
-            <div className="top">{this.props.topWidget}</div>
-            <div className="logo">{this.props.logoWidget}</div>
+            <div className="top">{this.props.topWidget || "this is just top"}</div>
+            <div className="logo">{this.props.logoWidget || "this is a logo "}</div>
             <div className="main" >
                 <div className="left"><SecondaryNavigation /></div>
                 <div className={this.getRightClass()}>{this.props.rightWidget}</div>

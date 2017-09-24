@@ -5,23 +5,7 @@ class ActionButtons extends Component{
     constructor(props) {
         super(props);
         this.renderActionButtons = this.renderActionButtons.bind(this);
-        // this.initActionButtons = this.initActionButtons.bind(this);
-        // this.setActionButtons = this.setActionButtons.bind(this);
     }
-
-    // componentDidMount() {
-    //     if (this.props.actionButtonsUrl) {
-    //         this.initActionButtons(this.props.actionButtonsUrl);
-    //     }
-    // }
-
-    // initActionButtons(actionButtonsUrl) {
-    //     ApiHelper.get(actionButtonsUrl).then(this.setActionButtons);
-    // }
-    
-    // setActionButtons(response) {
-    //     this.setState({actionButtons: response.data});
-    // }
 
     renderActionButtons() {
         return this.props.actionButtons.map((button) => {

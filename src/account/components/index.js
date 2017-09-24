@@ -7,6 +7,7 @@ import EventEmitter from "../../common/utils/MyEventEmitter.js";
 import {connect} from "react-redux";
 import css from "./index.less";
 import ValidationState from "../../common/utils/ValidationState.js";
+import AccountForm from "./AccountForm";
 
 class AccountWidget extends BaseListPage{
     constructor(props) {
@@ -15,17 +16,16 @@ class AccountWidget extends BaseListPage{
         this.handleFormSubmit = this.handleFormSubmit.bind(this);
         this.handleTableSelectRow = this.handleTableSelectRow.bind(this);
         this.handleTableSelectAll = this.handleTableSelectAll.bind(this);
-        this.validateForm = this.validateForm.bind(this);
         this.handlePagerClicked = this.handlePagerClicked.bind(this);
 
         this.state = {
+            selectedIds: [],
             formData: this.getInitFormData(),
             formAction: "/account/add",
             formMessage: null,
             formHasError: false
         }
 
-        this.formValidationState = new ValidationState();
     }
     
     getInitFormData() {
@@ -38,41 +38,36 @@ class AccountWidget extends BaseListPage{
     }
 
     handleFormSubmit(e) {
-        this.validateForm();
-        e.preventDefault(); //阻止form自动提交
-
-        if (!_.isEmpty(_.compact(this.formValidationState.validateMessage))) {
-            EventEmitter.emit("ShowMessageBar", "请修正表单错误", false);
-        } else {
-            ApiHelper.post(this.state.formAction, this.state.formData).then((result) => {
-                const success = result.data.success;
-                if (result.data.success) {
-                    const {page, pageSize} = this.props;
-                    this.props.getAccountList(page, pageSize);
-                    this.setState({
-                        formData: this.getInitFormData(),
-                        formAction: "/account/add"
-                    });
-                }
-                
-                EventEmitter.emit("ShowMessageBar", result.data.message, success);
-            }).catch((err) => {
-                EventEmitter.emit("ShowMessageBar", err.response.data.message, false);
-            });
-        }
+        ApiHelper.post(this.state.formAction, this.state.formData).then((result) => {
+            const success = result.data.success;
+            if (result.data.success) {
+                const {page, pageSize} = this.props;
+                this.props.getAccountList(page, pageSize);
+                this.setState({
+                    formData: this.getInitFormData(),
+                    formAction: "/account/add"
+                });
+            }
+            
+            EventEmitter.emit("ShowMessageBar", result.data.message, success);
+        }).catch((err) => {
+            EventEmitter.emit("ShowMessageBar", err.response.data.message, false);
+        });
     }
 
     handleRowDoubleClick(row, index) {
-        const formData = row;
-        const state = this.state;
-        const newstate = _.assign({}, state, {
-            formData,
-            formAction: "/account/edit",
-            formMessage: ""
-        });
-        this.setState(newstate);
+        ApiHelper.get(`/account/get?id=${row.id}`).then((response) => {
+            const formData = response.data;
+            const state = this.state;
+            const newstate = _.assign({}, state, {
+                formData,
+                formAction: "/account/edit",
+                formMessage: ""
+            });
+            this.setState(newstate);
 
-        EventEmitter.emit("ShowFixedRight");
+            EventEmitter.emit("ShowFixedRight");
+        });
     }
 
     handleTableSelectAll(e) {
@@ -92,66 +87,43 @@ class AccountWidget extends BaseListPage{
 
     componentDidMount() {
         this.props.getAccountList();
+        this.initActionButtons();
     }
 
-    getAccountList() {
-        if (_.isEmpty(this.props.accountTitleList) || _.isEmpty(this.props.accountDataList)) {
-            return null;
-        }
-        return (<div className="list-container">
-                    {this.getActionButtons()}
-                    <Table titles={this.props.accountTitleList} rows={this.props.accountDataList}
-                        handleRowDoubleClick={this.handleRowDoubleClick}
-                        handleSelectAll={this.handleTableSelectAll}
-                        handleSelectRow={this.handleTableSelectRow}
-                    />
-                    <Pager ref="pager" page={this.props.page} pageSize={this.props.pageSize} totalCount={this.props.totalCount} onPagerClicked={this.handlePagerClicked}/>
-                </div>);
+    initActionButtons() {
+        const {page, pageSize} = this.props;
+        ApiHelper.get("/account/actionButtons").then((response) => {
+            const actionButtons = response.data.map((button) => {
+                if (button.id === "add") {
+                    button.onClick = this.handleAddButtonClicked;
+                } else if (button.ajaxAction) {
+                    button.onClick = _.partial(this.handleAjaxButtonClicked,
+                                               button.url,
+                                               _.partial(this.props.getAccountList, page, pageSize));
+                }
+                return button;
+            });
+            this.setState({actionButtons});
+        });
     }
 
-    getmessage() {
-        if (this.state.formMessage) {
-            const className = this.state.formHasError ? "message error" : "message";
-            return <div className={className}>{this.state.formMessage}</div>;
-        }
-        return null;
-    }
+    
 
-    validateForm() {
-        this.formValidationState.validateMessage = [];
-        this.refs.nameInput.validate();
-        this.refs.passwordInput.validate();
-        this.refs.mobileInput.validate();
+    renderAccountList() {
+        return this.getTableList();
     }
 
     getAccountAddForm() {
-        const {formData} = this.state;
+        const {formAction, formData} = this.state;
 
-        return (<div className="form-container">
-                    {this.getmessage()}
-                    <Form method="post" action={this.state.formAction} handleFormSubmit={this.handleFormSubmit}>
-                        <FormInputItem ref="nameInput" validationState={this.formValidationState} validate={["notEmpty"]}
-                            title="用户名" type="text" name="name" id="name" value={formData.name} onChange={this.handleFormChange}/>
-
-                        <FormInputItem ref="passwordInput" validationState={this.formValidationState} validate={["notEmpty"]}
-                            title="密码" name="password" id="password" type="text" value={formData.password} onChange={this.handleFormChange}/>
-
-                        <FormInputItem ref="mobileInput" validationState={this.formValidationState} validate={[{func: "maxLength", maxLength: 15}]}
-                            title="手机号" type="text" name="mobile" id="mobile" value={formData.mobile} onChange={this.handleFormChange}/>
-
-                        <FormTreeItem title="部门" id="dep" name="dep" onChange={_.partial(this.handleFormTreeItemChange, "dep")}/>
-
-                        <FormTreeItem title="角色" id="role" name="role" onChange={_.partial(this.handleFormTreeItemChange, "role")}/>
-
-                        <FormInputItem title="启用"  id="available" name="available" type="checkbox" checked={formData.available} onClick={this.handleFormChange}/>
-                    </Form>
-                </div>);
+        return (<AccountForm formAction={formAction} formData={formData} onFormSubmit={this.handleFormSubmit}
+                    handleFormChange={this.handleFormChange} onFormTreeItemChange={this.handleFormTreeItemChange} />);
     }
 
     render(){
         return (<Layout 
             fixedRightWidget={this.getAccountAddForm()}
-            rightWidget={this.getAccountList()}
+            rightWidget={this.renderAccountList()}
         />);
     }
 }

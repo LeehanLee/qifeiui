@@ -32,7 +32,7 @@ class App extends Component{
         )
         const history = syncHistoryWithStore(hashHistory, store);
         return (<Provider store={store}>
-            <div>
+            <div className="app">
                 <Router history={history}>
                     <Route path="/account" component={AccountWidget} />
                     <Route path="/department" component={DepartmentWidget} />

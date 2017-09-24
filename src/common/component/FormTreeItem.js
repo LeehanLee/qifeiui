@@ -67,7 +67,6 @@ class FormTreeItem extends FormItem {
     }
 
     handleResetClick() {
-        
 
         if (this.props.onChange) {
             this.props.onChange({});

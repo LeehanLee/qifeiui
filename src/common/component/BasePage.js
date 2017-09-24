@@ -11,14 +11,8 @@ class BasePage extends Component{
         this.handleAjaxButtonClicked = this.handleAjaxButtonClicked.bind(this);
         this.handleFormTreeItemChange = this.handleFormTreeItemChange.bind(this);
         this.handleFormChange = this.handleFormChange.bind(this);
-    }
 
-    // handleAjaxButtonClicked(actionType) {
-    //     const ids = this.props.accountDataList.filter(l => l.checked).map(l => {
-    //         return l.id;
-    //     });
-    //     this.props.doActionForAccounts(ids.join(","), actionType);
-    // }
+    }
 
     handleAjaxButtonClicked(url, callback) {
         const ids = this.state.selectedIds.join(",");
@@ -28,7 +22,7 @@ class BasePage extends Component{
             return ApiHelper.post(url, {ids}).then(function (response) {
                 EventEmitter.emit("ShowMessageBar", response.data.message, response.data.success);
                 if (response.data.success && callback) {
-                    callback();
+                    callback(ids);
                 }            
             })
         }
@@ -36,12 +30,6 @@ class BasePage extends Component{
 
     getActionButtons() {
         return (<ActionButtons actionButtons={this.state.actionButtons} />);
-        // return (<div className="action-btns">
-        //     <Button onClick={_.partial(this.handleAddButtonClicked)} data-text="新增"/>
-        //     <Button onClick={_.partial(this.handleAjaxButtonClicked, "delete")} data-text="删除"/>
-        //     <Button onClick={_.partial(this.handleAjaxButtonClicked, "avaliable")} data-text="启用"/>
-        //     <Button onClick={_.partial(this.handleAjaxButtonClicked, "unavaliable")} data-text="禁用"/>
-        // </div>);
     }
 
     
