@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import EventEmitter from "../utils/MyEventEmitter";
 import MessageBar from "./MessageBar";
 import SecondaryNavigation from "../../secondarynavigation/components/index";
+import logoImg from "../../../images/logo.png";
 
 class Layout extends Component{
     constructor(props) {
@@ -48,7 +49,12 @@ class Layout extends Component{
     render(){
         return (<div className="layout">
             <div className="top">{this.props.topWidget || "this is just top"}</div>
-            <div className="logo">{this.props.logoWidget || "this is a logo "}</div>
+            <div className="logo-widget">
+                <div className="logo">
+                    <img src={logoImg}/>
+                    <div className="logo-text">this is a logo</div>
+                </div>
+            </div>
             <div className="main" >
                 <div className="left"><SecondaryNavigation /></div>
                 <div className={this.getRightClass()}>{this.props.rightWidget}</div>

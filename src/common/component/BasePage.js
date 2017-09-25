@@ -8,29 +8,29 @@ class BasePage extends Component{
     constructor(props) {
         super(props);
         this.handleAddButtonClicked = this.handleAddButtonClicked.bind(this);
-        this.handleAjaxButtonClicked = this.handleAjaxButtonClicked.bind(this);
+        // this.handleAjaxButtonClicked = this.handleAjaxButtonClicked.bind(this);
         this.handleFormTreeItemChange = this.handleFormTreeItemChange.bind(this);
         this.handleFormChange = this.handleFormChange.bind(this);
 
     }
 
-    handleAjaxButtonClicked(url, callback) {
-        const ids = this.state.selectedIds.join(",");
-        if (_.isEmpty(ids)) {
-            EventEmitter.emit("ShowMessageBar", "请先选择用户", false);
-        } else {
-            return ApiHelper.post(url, {ids}).then(function (response) {
-                EventEmitter.emit("ShowMessageBar", response.data.message, response.data.success);
-                if (response.data.success && callback) {
-                    callback(ids);
-                }            
-            })
-        }
-    }
+    // handleAjaxButtonClicked(url, callback) {
+    //     const ids = this.state.selectedIds.join(",");
+    //     if (_.isEmpty(ids)) {
+    //         EventEmitter.emit("ShowMessageBar", "请先选择用户", false);
+    //     } else {
+    //         return ApiHelper.post(url, {ids}).then(function (response) {
+    //             EventEmitter.emit("ShowMessageBar", response.data.message, response.data.success);
+    //             if (response.data.success && callback) {
+    //                 callback(ids);
+    //             }            
+    //         })
+    //     }
+    // }
 
-    getActionButtons() {
-        return (<ActionButtons actionButtons={this.state.actionButtons} />);
-    }
+    // getActionButtons() {
+    //     return (<ActionButtons actionButtons={this.state.actionButtons} />);
+    // }
 
     
     handleFormChange(e) {

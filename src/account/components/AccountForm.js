@@ -67,7 +67,7 @@ class AccountForm extends Component{
                             title="手机号" type="text" name="mobile" id="mobile" value={formData.mobile} onChange={this.props.handleFormChange}/>
 
                         <FormTreeItem url="/department/tree" title="部门" id="dep" name="dep" onChange={this.handleDepartmentChange}
-                            selectedIds={formData.departmentId} selectedTexts={formData.departmentName}/>
+                            selectedIds={formData.departmentid} selectedTexts={formData.departmentName} selectMode="radio"/>
 
                         <FormTreeItem title="角色" id="role" name="role" onChange={_.partial(this.handleDepartmentChange, "role")}/>
 

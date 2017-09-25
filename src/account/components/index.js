@@ -1,25 +1,23 @@
 import React, { Component } from 'react';
-import {Layout, Form, FormInputItem, FormTreeItem, Table, Button, Pager, Tree, Modal, BaseListPage} from "../../common/component";
+import {Layout, ListPage, BasePage} from "../../common/component";
 import * as Actions from "../actions/index.js";
 import {bindActionCreators} from "redux";
 import ApiHelper from "../../common/utils/ApiHelper";
 import EventEmitter from "../../common/utils/MyEventEmitter.js";
 import {connect} from "react-redux";
 import css from "./index.less";
-import ValidationState from "../../common/utils/ValidationState.js";
 import AccountForm from "./AccountForm";
 
-class AccountWidget extends BaseListPage{
+class AccountWidget extends BasePage{
     constructor(props) {
         super(props);
-        this.handleRowDoubleClick = this.handleRowDoubleClick.bind(this);
+        this.getAccountList = this.getAccountList.bind(this);
         this.handleFormSubmit = this.handleFormSubmit.bind(this);
-        this.handleTableSelectRow = this.handleTableSelectRow.bind(this);
-        this.handleTableSelectAll = this.handleTableSelectAll.bind(this);
-        this.handlePagerClicked = this.handlePagerClicked.bind(this);
+        this.handleAddButtonClicked = this.handleAddButtonClicked.bind(this);
+        this.handleRowDoubleClick = this.handleRowDoubleClick.bind(this);
+        this.getAccountAddForm = this.getAccountAddForm.bind(this);
 
         this.state = {
-            selectedIds: [],
             formData: this.getInitFormData(),
             formAction: "/account/add",
             formMessage: null,
@@ -55,8 +53,18 @@ class AccountWidget extends BaseListPage{
         });
     }
 
-    handleRowDoubleClick(row, index) {
-        ApiHelper.get(`/account/get?id=${row.id}`).then((response) => {
+    handleAddButtonClicked() {
+        this.setState({
+            formData: this.getInitFormData(),
+            formAction: "/account/add",
+            formMessage: null,
+            formHasError: false
+        });
+        EventEmitter.emit("ShowFixedRight");
+    }
+
+    handleRowDoubleClick(id, index) {
+        ApiHelper.get(`/account/get?id=${id}`).then((response) => {
             const formData = response.data;
             const state = this.state;
             const newstate = _.assign({}, state, {
@@ -70,47 +78,27 @@ class AccountWidget extends BaseListPage{
         });
     }
 
-    handleTableSelectAll(e) {
-        this.props.selectListItemAll(e.currentTarget.checked, this.props.accountDataList);
-    }
-
-    handleTableSelectRow(index, e) {
-        e.stopPropagation();
-        e.preventDefault();
-
-        this.props.selectListItem(index, this.props.accountDataList);
-    }
-
-    handlePagerClicked(page, pageSize) {
-        this.props.getAccountList(page, pageSize);
-    }
-
     componentDidMount() {
-        this.props.getAccountList();
+        this.getAccountList();
         this.initActionButtons();
+    }
+
+    getAccountList(page, pageSize) {
+        this.props.getAccountList(page, pageSize);
     }
 
     initActionButtons() {
         const {page, pageSize} = this.props;
         ApiHelper.get("/account/actionButtons").then((response) => {
-            const actionButtons = response.data.map((button) => {
-                if (button.id === "add") {
-                    button.onClick = this.handleAddButtonClicked;
-                } else if (button.ajaxAction) {
-                    button.onClick = _.partial(this.handleAjaxButtonClicked,
-                                               button.url,
-                                               _.partial(this.props.getAccountList, page, pageSize));
-                }
-                return button;
-            });
+            const actionButtons = response.data;
             this.setState({actionButtons});
         });
     }
 
-    
-
     renderAccountList() {
-        return this.getTableList();
+        return <ListPage titleList={this.props.accountTitleList} dataList={this.props.accountDataList} page={this.props.page}
+                    pageSize={this.props.pageSize} totalCount={this.props.totalCount} getList={this.props.getAccountList}
+                    onRowDoubleClick={this.handleRowDoubleClick} actionButtons={this.state.actionButtons}/>;
     }
 
     getAccountAddForm() {

@@ -7,6 +7,58 @@ import Checkbox from "./Checkbox";
 class Table extends Component{
     constructor(props){
         super(props);
+
+        this.initSelectedIds = this.initSelectedIds.bind(this);
+        this.handleSelectAll = this.handleSelectAll.bind(this);
+        this.handleRowClicked = this.handleRowClicked.bind(this);
+        this.state = {
+            selectedIds: this.initSelectedIds()
+        };
+    }
+
+    initSelectedIds(props) {
+        const result = [];
+        this.props.rows.forEach((r) => {
+            if (r.checked === true) {
+                result.push(r.id);
+            }
+        });
+        return result;
+    }
+
+    handleSelectAll(e) {
+        const result = [];
+        const checked = e.target.checked;
+        
+        if (checked) {
+            this.props.rows.forEach((r) => {
+                result.push(r.id);
+            });
+        }
+        
+        this.setState({selectedIds: result});
+        if (this.props.onSelecteAll) {
+            this.props.onSelecteAll(result, checked);
+        }
+    }
+
+    handleRowClicked(id) {
+        const selectedIds = [...this.state.selectedIds];
+        let newStateisChecked = false;
+
+        if (selectedIds.indexOf(id) > -1) {
+            _.remove(selectedIds, (id) => id === id);
+        } else {
+            selectedIds.push(id);
+            newStateisChecked = true;
+        }
+        this.setState({
+            selectedIds
+        });
+
+        if (this.props.onRowClicked) {
+            this.props.onRowClicked(id, newStateisChecked);
+        }
     }
     render(){
         const { titles, rows } = this.props;
@@ -16,7 +68,7 @@ class Table extends Component{
                 <thead>
                     <tr>
                         <th className="checkbox-container">
-                            <Checkbox onChange={this.props.handleSelectAll} checked={!_.isEmpty(this.props.rows) && (!_.find(this.props.rows, item => _.isNil(item.checked) || !item.checked))} />
+                            <Checkbox onChange={this.handleSelectAll} checked={!_.isEmpty(this.props.rows) && this.state.selectedIds.length === this.props.rows.length} />
                         </th>
                         {
                             titles.map((t, index) => {                                
@@ -28,9 +80,9 @@ class Table extends Component{
                 <tbody>
                 {
                     rows.map((row, rindex) => {
-                        return (<tr onClick={_.partial(this.props.handleSelectRow, rindex)} onDoubleClick={_.partial(this.props.handleRowDoubleClick, row, rindex)} key={rindex}>
+                        return (<tr onClick={_.partial(this.handleRowClicked, row.id)} onDoubleClick={_.partial(this.props.handleRowDoubleClick, row.id)} key={rindex}>
                                     <td className="select-checkbox">
-                                        <Checkbox onChange={_.partial(this.props.handleSelectRow, rindex)} checked={_.isNil(row.checked) ? false : row.checked} />
+                                        <Checkbox onChange={_.partial(this.handleRowClicked, row.id)} checked={this.state.selectedIds.indexOf(row.id) >= 0} />
                                     </td>
                                     {
                                         titles.map((t, cindex) => {

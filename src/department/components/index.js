@@ -3,7 +3,7 @@ import * as Actions from "../actions/index.js";
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
 import css from "./index.less";
-import {BaseTreePage, Layout, Tree, FormInputItem, Form, FormTreeItem} from "../../common/component";
+import {BasePage, Layout, Tree, ActionButtons, Button} from "../../common/component";
 import ValidationState from "../../common/utils/ValidationState.js";
 import ApiHelper from "../../common/utils/ApiHelper";
 import EventEmitter from "../../common/utils/MyEventEmitter.js";
@@ -11,18 +11,22 @@ import DepartmentForm from "./DepartmentForm";
 
 const initFormData = {name: "", parentid: "", available: false};
 
-class DepartmentWidget extends BaseTreePage{
+class DepartmentWidget extends BasePage{
     constructor(props) {
         super(props);
         this.handleFormSubmit = this.handleFormSubmit.bind(this);
         this.setDepartmentForm = this.setDepartmentForm.bind(this);
         this.setDepartmentFormWithRemoteData = this.setDepartmentFormWithRemoteData.bind(this);
         this.initActionButtons = this.initActionButtons.bind(this);
+        this.getDepartmentTreeWidget = this.getDepartmentTreeWidget.bind(this);
+        this.handleAjaxButtonClicked = this.handleAjaxButtonClicked.bind(this);
+        this.handleAjaxActionCallback = this.handleAjaxActionCallback.bind(this);
 
         this.state = {
             formAction: "/department/add",
-            formData: initFormData
-        }
+            formData: initFormData,
+            actionButtons: []
+        };
 
         this.child = {};
         this.actionButtonsUrl = "/department/actionButtons";
@@ -75,10 +79,43 @@ class DepartmentWidget extends BaseTreePage{
             this.setState({formData: initFormData, formAction: "/department/add"});
         }
     }
-    
+    handleAjaxButtonClicked(url, callback) {
+        const ids = this.state.selectedIds.join(",");
+        if (_.isEmpty(ids)) {
+            EventEmitter.emit("ShowMessageBar", "请先选择用户", false);
+        } else {
+            return ApiHelper.post(url, {ids}).then(this.handleAjaxActionCallback);
+        }
+    }
+
+    handleAjaxActionCallback(response) {
+        EventEmitter.emit("ShowMessageBar", response.data.message, response.data.success);
+        if (response.data.success) {
+            this.child.departmentTree.initTree("/department/tree");
+        }  
+    }
+
+    renderActionButtons() {
+        if (!this.state.actionButtons) {
+            return null;
+        }
+        return (<div className="action-btns">
+            {
+                this.state.actionButtons.map((button) => {
+                    switch(button.id) {
+                        case "add":
+                            return <Button key={button.id} onClick={this.handleAddButtonClicked} data-text={button.text}/>;
+                        default:
+                            return <Button key={button.id} onClick={_.partial(this.handleAjaxButtonClicked, button.url)} data-text={button.text}/>;
+                    }
+                })
+            }
+        </div>);
+    }
+
     getDepartmentTreeWidget() {
         return (<div className="tree-container">
-            {this.getActionButtons()}
+            {this.renderActionButtons()}
             <div className="tree-and-form clearfix">
                 <div className="span1 fl">
                     <div className="tree-area">
@@ -99,21 +136,12 @@ class DepartmentWidget extends BaseTreePage{
 
     initActionButtons() {
         ApiHelper.get("/department/actionButtons").then((response) => {
-            const actionButtons = response.data.map((button) => {
-                if (button.id === "add") {
-                    button.onClick = this.handleAddButtonClicked;
-                } else if (button.ajaxAction) {
-                    button.onClick = _.partial(this.handleAjaxButtonClicked,
-                                               button.url,
-                                               _.partial(this.child.departmentTree.initTree, "/department/tree"));
-                }
-                return button;
-            });
+            const actionButtons = response.data;
             this.setState({actionButtons});
         });
     }
 
-    render(){
+    render() {
         return (<Layout 
             rightWidget={this.getDepartmentTreeWidget()}
         />);
