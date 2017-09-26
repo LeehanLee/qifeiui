@@ -25,7 +25,8 @@ class DepartmentWidget extends BasePage{
         this.state = {
             formAction: "/department/add",
             formData: initFormData,
-            actionButtons: []
+            actionButtons: [],
+            selectedIds: []
         };
 
         this.child = {};

@@ -19,9 +19,7 @@ class AccountWidget extends BasePage{
 
         this.state = {
             formData: this.getInitFormData(),
-            formAction: "/account/add",
-            formMessage: null,
-            formHasError: false
+            formAction: "/account/add"
         }
 
     }
@@ -56,9 +54,7 @@ class AccountWidget extends BasePage{
     handleAddButtonClicked() {
         this.setState({
             formData: this.getInitFormData(),
-            formAction: "/account/add",
-            formMessage: null,
-            formHasError: false
+            formAction: "/account/add"
         });
         EventEmitter.emit("ShowFixedRight");
     }
@@ -69,8 +65,7 @@ class AccountWidget extends BasePage{
             const state = this.state;
             const newstate = _.assign({}, state, {
                 formData,
-                formAction: "/account/edit",
-                formMessage: ""
+                formAction: "/account/edit"
             });
             this.setState(newstate);
 
@@ -96,9 +91,11 @@ class AccountWidget extends BasePage{
     }
 
     renderAccountList() {
-        return <ListPage titleList={this.props.accountTitleList} dataList={this.props.accountDataList} page={this.props.page}
+        const colWidth = ["10%", "30%", "30%", "20%", "10%"];
+        return <ListPage colWidth={colWidth} titleList={this.props.accountTitleList} dataList={this.props.accountDataList} page={this.props.page}
                     pageSize={this.props.pageSize} totalCount={this.props.totalCount} getList={this.props.getAccountList}
-                    onRowDoubleClick={this.handleRowDoubleClick} actionButtons={this.state.actionButtons}/>;
+                    onRowDoubleClick={this.handleRowDoubleClick} actionButtons={this.state.actionButtons}
+                    onAddButtonClicked={this.handleAddButtonClicked}/>;
     }
 
     getAccountAddForm() {

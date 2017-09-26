@@ -46,7 +46,7 @@ class ListPage extends Component{
         if (checked) {
             selectedIds.push(id);
         } else {
-            _.remove(selectedIds, (id) => id === id);
+            _.remove(selectedIds, (selectedId) => {return selectedId === id});
         }
         this.setState({selectedIds});
     }
@@ -80,7 +80,7 @@ class ListPage extends Component{
                 this.props.actionButtons.map((button) => {
                     switch(button.id) {
                         case "add":
-                            return <Button key={button.id} onClick={this.props.handleAddButtonClicked} data-text={button.text}/>;
+                            return <Button key={button.id} onClick={this.props.onAddButtonClicked} data-text={button.text}/>;
                         default:
                             return <Button key={button.id} onClick={_.partial(this.handleAjaxButtonClicked, button.url)} data-text={button.text}/>;
                     }
@@ -95,7 +95,7 @@ class ListPage extends Component{
         }
         return (<div className="list-container">
                     {this.renderActionButtons()}
-                    <Table titles={this.props.titleList} rows={this.props.dataList}
+                    <Table colWidth={this.props.colWidth} titles={this.props.titleList} rows={this.props.dataList}
                         handleRowDoubleClick={this.handleRowDoubleClick}
                         onSelecteAll={this.handleTableSelectAll}
                         onRowClicked={this.handleTableRowClicked}

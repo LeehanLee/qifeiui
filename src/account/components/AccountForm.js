@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { FormInputItem, Form, FormTreeItem} from "../../common/component";
 import ValidationState from "../../common/utils/ValidationState.js";
+import EventEmitter from "../../common/utils/MyEventEmitter";
 
 class AccountForm extends Component{
     constructor(props) {
@@ -22,6 +23,10 @@ class AccountForm extends Component{
         this.refs.nameInput.validate();
         this.refs.passwordInput.validate();
         this.refs.mobileInput.validate();
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        this.validateForm();
     }
 
     getmessage() {

@@ -9,7 +9,7 @@ class BaseListPage extends BasePage{
         super(props);
         this.handleAddButtonClicked = this.handleAddButtonClicked.bind(this);
 
-        this.handleRowDoubleClick = this.handleRowDoubleClick.bind(this);
+        // this.handleRowDoubleClick = this.handleRowDoubleClick.bind(this);
         this.handleTableSelectAll = this.handleTableSelectAll.bind(this);
         this.handleTableRowClicked = this.handleTableRowClicked.bind(this);
         this.handlePagerClicked = this.handlePagerClicked.bind(this);
@@ -25,20 +25,20 @@ class BaseListPage extends BasePage{
         EventEmitter.emit("ShowFixedRight");
     }
 
-    handleRowDoubleClick(id, index) {
-        ApiHelper.get(`/account/get?id=${id}`).then((response) => {
-            const formData = response.data;
-            const state = this.state;
-            const newstate = _.assign({}, state, {
-                formData,
-                formAction: "/account/edit",
-                formMessage: ""
-            });
-            this.setState(newstate);
+    // handleRowDoubleClick(id, index) {
+    //     ApiHelper.get(`/account/get?id=${id}`).then((response) => {
+    //         const formData = response.data;
+    //         const state = this.state;
+    //         const newstate = _.assign({}, state, {
+    //             formData,
+    //             formAction: "/account/edit",
+    //             formMessage: ""
+    //         });
+    //         this.setState(newstate);
 
-            EventEmitter.emit("ShowFixedRight");
-        });
-    }
+    //         EventEmitter.emit("ShowFixedRight");
+    //     });
+    // }
 
     handleTableSelectAll(selectedIds) {
         this.setState({selectedIds});
@@ -49,7 +49,7 @@ class BaseListPage extends BasePage{
         if (checked) {
             selectedIds.push(id);
         } else {
-            _.remove(selectedIds, (id) => id === id);
+            _.remove(selectedIds, (selectedId) => {return selectedId === id});
         }
         this.setState({selectedIds});
     }

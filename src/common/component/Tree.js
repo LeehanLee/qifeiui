@@ -31,7 +31,7 @@ class Tree extends Component{
 
         const expandedIds = [...this.state.expandedIds];
         if (expandedIds.indexOf(node.id) > -1) {
-            _.remove(expandedIds, (id) => id === node.id);
+            _.remove(expandedIds, (id) => {return id === node.id});
         } else {
             expandedIds.push(node.id);
         }
@@ -46,7 +46,7 @@ class Tree extends Component{
         let newStateisChecked = false;
         const selectedIds = [...this.state.selectedIds];
         if (selectedIds.indexOf(node.id) > -1) {
-            _.remove(selectedIds, (id) => id === node.id);
+            _.remove(selectedIds, (id) => {return id === node.id});
         } else {
             if (this.props.selectMode === "radio") {
                 _.remove(selectedIds);
@@ -57,7 +57,7 @@ class Tree extends Component{
 
         const selectedTexts = [...this.state.selectedTexts];
         if (selectedTexts.indexOf(node.name) > -1) {
-            _.remove(selectedTexts, (text) => text === node.name);
+            _.remove(selectedTexts, (text) => {return text === node.name});
         } else {
             if (this.props.selectMode === "radio") {
                 _.remove(selectedTexts);

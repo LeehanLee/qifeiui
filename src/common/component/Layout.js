@@ -10,8 +10,10 @@ class Layout extends Component{
         super(props);
         this.handleCloseBtnClick = this.handleCloseBtnClick.bind(this);
         this.handleShowFixedRight = this.handleShowFixedRight.bind(this);
+        this.toggleLeft = this.toggleLeft.bind(this);
         this.state = {
-            showFixedRight: false
+            showFixedRight: false,
+            minLeft: false
         }
     }
 
@@ -19,8 +21,14 @@ class Layout extends Component{
         EventEmitter.on("ShowFixedRight", this.handleShowFixedRight);
     }
 
+    componentWillUnmount() {
+        EventEmitter.removeListener("ShowFixedRight", this.handleShowFixedRight);
+    }
+
     handleShowFixedRight() {
-        this.setState({showFixedRight: true});
+        if (!this.state.showFixedRight) {
+            this.setState({showFixedRight: true});
+        }
     }
 
     handleCloseBtnClick() {
@@ -43,7 +51,30 @@ class Layout extends Component{
         if (this.props.fixedRightWidget && this.state.showFixedRight) {
             classname = `${classname} short`;
         }
+        if (this.state.minLeft) {
+            classname = `${classname} with-min-left`;
+        }
         return classname;
+    }
+
+    getLeftClass() {
+        let classname = "left";
+        if (this.state.minLeft) {
+            classname = `${classname} min-left`;
+        }
+        return classname;
+    }
+
+    toggleLeft() {
+        this.setState({minLeft: !this.state.minLeft});
+    }
+
+    getToggleLeftText() {
+        if (this.state.minLeft) {
+            return ">>";
+        } else {
+            return "<<";
+        }
     }
 
     render(){
@@ -56,7 +87,10 @@ class Layout extends Component{
                 </div>
             </div>
             <div className="main" >
-                <div className="left"><SecondaryNavigation /></div>
+                <div className={this.getLeftClass()}>
+                    <SecondaryNavigation />
+                    <div className="toggle-left" onClick={this.toggleLeft}>{this.getToggleLeftText()}</div>
+                </div>
                 <div className={this.getRightClass()}>{this.props.rightWidget}</div>
             </div>
             {this.getFixedRight()}

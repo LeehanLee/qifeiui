@@ -70,7 +70,24 @@
                 width: 15%;
                 background: #1a3f6f;
                 min-width: 55px;
+                position: relative;
                 overflow: auto;
+                transition: all 0.3s ease;
+
+                .toggle-left {
+                    cursor: pointer;
+                    position: absolute;
+                    bottom: 0;
+                    width: 100%;
+                    height: 50px;
+                    line-height: 50px;
+                    color: #fff;
+                    text-align: center;
+                }
+
+                &.min-left {
+                    width: 60px;
+                }
             }
             
             .right {
@@ -80,6 +97,14 @@
 
                 &.short {
                     width: 49%;
+
+                    &.with-min-left {
+                        width: calc(~"64% - 60px");
+                    }
+                }
+
+                &.with-min-left {
+                    width: calc(~"100% - 60px");
                 }
             }
         }

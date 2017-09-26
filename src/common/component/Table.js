@@ -42,12 +42,15 @@ class Table extends Component{
         }
     }
 
-    handleRowClicked(id) {
+    handleRowClicked(id, e) {
+        e.stopPropagation();
+        e.preventDefault();
+
         const selectedIds = [...this.state.selectedIds];
         let newStateisChecked = false;
 
         if (selectedIds.indexOf(id) > -1) {
-            _.remove(selectedIds, (id) => id === id);
+            _.remove(selectedIds, (selectedId) => {return selectedId === id});
         } else {
             selectedIds.push(id);
             newStateisChecked = true;
@@ -61,18 +64,18 @@ class Table extends Component{
         }
     }
     render(){
-        const { titles, rows } = this.props;
+        const { titles, rows, colWidth } = this.props;
         return (
             <div className="table-container">
             <table className="content-table">
                 <thead>
                     <tr>
                         <th className="checkbox-container">
-                            <Checkbox onChange={this.handleSelectAll} checked={!_.isEmpty(this.props.rows) && this.state.selectedIds.length === this.props.rows.length} />
+                            <Checkbox onChange={this.handleSelectAll} checked={!_.isEmpty(this.props.rows) && !_.some(this.props.rows, (row) => !_.some(this.state.selectedIds, (selectedId) => selectedId === row.id))} />
                         </th>
                         {
                             titles.map((t, index) => {                                
-                                return (<th key={index}>{t.value}</th>);
+                                return (<th style={{width: colWidth[index]}} key={index}>{t.value}</th>);
                             })
                         }
                     </tr>

@@ -4,8 +4,8 @@ import {connect} from "react-redux";
 import css from "./index.less";
 
 const items = [
-    {name: "account", url: "/account"},
-    {name: "department", url: "/department"},
+    {name: "用户管理", url: "/account"},
+    {name: "部门管理", url: "/department"},
 ];
 
 class SecondaryNavigation extends Component{

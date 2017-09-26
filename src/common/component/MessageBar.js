@@ -14,6 +14,7 @@ class MessageBar extends Component{
     constructor(props) {
         super(props);
         this.handleHideMessageBar = this.handleHideMessageBar.bind(this);
+        this.showMessageBar = this.showMessageBar.bind(this);
         this.state = {
             message: null,
             show: false,
@@ -22,19 +23,26 @@ class MessageBar extends Component{
         }
     }
 
-    componentDidMount() {
-        EventEmitter.on("ShowMessageBar", (message, isInfo, style) => {
-            if (!style) { style = defaultStyle; }
-            this.setState({
-                message,
-                show: true,
-                isInfo,
-                style
-            });
-            clearTimeout(timer); //每次触发要显示它的时候先清除一下之前的定时器，因为现在正好要设定时器，之前那个不希望它生效了
-            timer = setTimeout(this.handleHideMessageBar, 3000);
+    showMessageBar(message, isInfo, style) {
+        if (!style) { style = defaultStyle; }
+        this.setState({
+            message,
+            show: true,
+            isInfo,
+            style
         });
+        clearTimeout(timer); //每次触发要显示它的时候先清除一下之前的定时器，因为现在正好要设定时器，之前那个不希望它生效了
+        timer = setTimeout(this.handleHideMessageBar, 3000);
     }
+
+    componentDidMount() {
+        EventEmitter.on("ShowMessageBar", this.showMessageBar);
+    }
+
+    componentWillUnmount() {
+        EventEmitter.removeListener("ShowMessageBar", this.showMessageBar);
+    }
+
     handleHideMessageBar() {
         this.setState({show: false, message: null, isInfo: true});
     }
